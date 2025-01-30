@@ -19,4 +19,9 @@ public class LoginController {
     public String signUp(@RequestBody User user) {
         return userService.signUpUser(user);
     }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        return userService.loginUser(user);
+    }
 }

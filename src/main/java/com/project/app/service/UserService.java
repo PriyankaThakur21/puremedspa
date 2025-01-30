@@ -33,4 +33,15 @@ public class UserService {
         loginRepository.save(user);
         return "User signed up successfully!";
     }
+
+    public String loginUser(User user) {
+        User existingUser = loginRepository.findByUsername(user.getUsername());
+        if(existingUser==null){
+            return "Invalid username";
+        }
+        if(!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())){
+            return "Invalid password";
+        }
+        return "Login successful";
+    }
 }

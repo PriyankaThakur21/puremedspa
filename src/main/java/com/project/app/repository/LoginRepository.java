@@ -16,4 +16,7 @@ public interface LoginRepository extends JpaRepository<User, Long> {
 
     @Query("Select count(u) from User u where u.email= :email")
     Integer countByEmail(String email);
+
+    @Query("Select u from User u where u.username = :username")
+    User findByUsername(String username);
 }

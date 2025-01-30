@@ -136,6 +136,9 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
+    public User() {
+    }
+
     @Override
     public String toString() {
         return "User{" +
