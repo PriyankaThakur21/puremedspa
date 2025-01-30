@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,31 +18,51 @@ public class UserService {
 
 
     public String signUpUser(User user) {
-        if(loginRepository.countByUserName(user.getUsername())>0){
-            return "User already exist with username: "+ user.getUsername();
-        }
-        if(loginRepository.countByPhoneNumber(user.getPhoneNumber())>0){
-            return "User already exist with phoneNumber: "+ user.getPhoneNumber();
-        }
-        if(loginRepository.countByEmail(user.getEmail())>0){
-            return "User already exist with email: "+ user.getEmail();
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
+        try {
+            if (loginRepository.countByUserName(user.getUsername()) > 0) {
+                return "User already exist with username: " + user.getUsername();
+            }
+            if (loginRepository.countByPhoneNumber(user.getPhoneNumber()) > 0) {
+                return "User already exist with phoneNumber: " + user.getPhoneNumber();
+            }
+            if (loginRepository.countByEmail(user.getEmail()) > 0) {
+                return "User already exist with email: " + user.getEmail();
+            }
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setCreatedAt(new Date());
+            user.setUpdatedAt(new Date());
 
-        loginRepository.save(user);
-        return "User signed up successfully!";
+            loginRepository.save(user);
+            return "User signed up successfully!";
+        }
+        catch(Exception e){
+            return "Exception in saving data"+ e;
+        }
     }
 
-    public String loginUser(User user) {
-        User existingUser = loginRepository.findByUsername(user.getUsername());
-        if(existingUser==null){
-            return "Invalid username";
+    public String loginUser(User user){
+            User existingUser = loginRepository.findByUsername(user.getUsername());
+            if (existingUser == null) {
+                return "Invalid username";
+            }
+            if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+                return "Invalid password";
+            }
+            return "Login successful";
+    }
+
+    public String forgetPassword(User user) {
+        try {
+            Optional<User> existingUser = loginRepository.findById(user.getId());
+            if (existingUser.isEmpty()) {
+                return "User does not exist";
+            }
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            existingUser.get().setPassword(encodedPassword);
+            loginRepository.save(existingUser.get());
+            return "Password updated successfully";
+        } catch (Exception e) {
+            return "Exception in saving new password" + e;
         }
-        if(!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())){
-            return "Invalid password";
-        }
-        return "Login successful";
     }
 }
