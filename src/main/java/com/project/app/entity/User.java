@@ -43,6 +43,13 @@ public class User {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.role == null) {
+            this.role = "USER"; // Set role to "USER" if it's null before persisting
+        }
+    }
+
     public Long getId() {
         return id;
     }

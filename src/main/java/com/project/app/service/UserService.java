@@ -1,11 +1,11 @@
 package com.project.app.service;
-
 import com.project.app.entity.User;
 import com.project.app.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,7 +33,7 @@ public class UserService {
             user.setUpdatedAt(new Date());
 
             loginRepository.save(user);
-            return "User signed up successfully!";
+            return "User added successfully!";
         }
         catch(Exception e){
             return "Exception in saving data"+ e;
@@ -53,7 +53,7 @@ public class UserService {
 
     public String forgetPassword(User user) {
         try {
-            Optional<User> existingUser = loginRepository.findById(user.getId());
+            Optional<User> existingUser = Optional.ofNullable(loginRepository.findByUsername(user.getUsername()));
             if (existingUser.isEmpty()) {
                 return "User does not exist";
             }
@@ -63,6 +63,22 @@ public class UserService {
             return "Password updated successfully";
         } catch (Exception e) {
             return "Exception in saving new password" + e;
+        }
+    }
+
+    public String addUser(String adminUserName, User user) {
+        try {
+            Optional<User> existingUser = Optional.ofNullable(loginRepository.findByUsername(adminUserName));
+            if (existingUser.isEmpty()) {
+                return "User does not exist with userName: " + adminUserName;
+            }
+            if (!existingUser.get().getRole().equals("ADMIN")) {
+                return "You don't have permission";
+            }
+            System.out.println(user.toString());
+            return signUpUser(user);
+        } catch (Exception e) {
+            return "Error occurred while saving user" + e;
         }
     }
 }
