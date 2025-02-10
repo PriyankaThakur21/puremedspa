@@ -1,6 +1,6 @@
 package com.project.app.controller;
 
-import com.project.app.entity.AdminRequestEntity;
+import com.project.app.dto.AdminRequestDto;
 import com.project.app.dto.MasterResponseDto;
 import com.project.app.entity.User;
 import com.project.app.service.UserService;
@@ -40,7 +40,7 @@ public class LoginController {
     catch(Exception e){
         log.error("Error occurred during signup: {}", e.getMessage(), e);
         MasterResponseDto<User> response = new MasterResponseDto<>(null, HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "An error occurred during signup. Please try again later.");
-        return ResponseEntity.status(500).body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 }
 
@@ -86,7 +86,7 @@ public class LoginController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<MasterResponseDto<User>> addUser(@RequestBody AdminRequestEntity adminRequest) {
+    public ResponseEntity<MasterResponseDto<User>> addUser(@RequestBody AdminRequestDto adminRequest) {
         try {
             log.info("Attempting to add user by admin: {}", adminRequest.getAdminUsername());
             String result = userService.addUser(adminRequest);

@@ -1,5 +1,5 @@
 package com.project.app.service;
-import com.project.app.entity.AdminRequestEntity;
+import com.project.app.dto.AdminRequestDto;
 import com.project.app.entity.User;
 import com.project.app.repository.LoginRepository;
 import org.slf4j.Logger;
@@ -102,7 +102,7 @@ public class UserService {
         }
     }
 
-    public String addUser(AdminRequestEntity adminRequest) {
+    public String addUser(AdminRequestDto adminRequest) {
         log.info("Inside addUser method");
         try {
             Optional<User> existingUser = loginRepository.findByUsername(adminRequest.getAdminUsername());

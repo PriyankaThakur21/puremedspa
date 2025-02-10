@@ -1,6 +1,8 @@
-package com.project.app.entity;
+package com.project.app.dto;
 
-public class AdminRequestEntity {
+import com.project.app.entity.User;
+
+public class AdminRequestDto {
     private String adminUsername;
     private User user;
 
